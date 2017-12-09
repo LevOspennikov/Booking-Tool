@@ -28,7 +28,7 @@ public class BookingJdbcDao extends JdbcDaoSupport implements BookingDao {
                 "CREATE TABLE IF NOT EXISTS Bookings (" +
                 "id             INTEGER   PRIMARY KEY AUTOINCREMENT," +
                 "userId         INTEGER   NOT NULL," +
-                "personsCont    TEXT      NOT NULL," +
+                "personsCount   TEXT      NOT NULL," +
                 "time           DATETIME  NOT NULL" +
                 ");";
         return getJdbcTemplate().update(sql);
