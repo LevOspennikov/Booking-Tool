@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Restaurant-booking-bot</artifactId>
+    <artifactId>Restaurant-Booking-Bot</artifactId>
 
     <dependencies>
         <dependency>
