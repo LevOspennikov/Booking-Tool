@@ -1,14 +1,14 @@
 package model;
 
-import java.util.Date;
-
 public class Booking {
     private int id;
-    private int userId;
-    private Date time;
+    private long userId;
+    private String time;
     private int personsCount;
 
-    public Booking(int id, int userId, Date time, int personsCount) {
+    public Booking() {};
+
+    public Booking(int id, long userId, String time, int personsCount) {
         this.id = id;
         this.userId = userId;
         this.time = time;
@@ -19,15 +19,31 @@ public class Booking {
         return id;
     }
 
-    public int getUserId() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public long getUserId() {
         return userId;
     }
 
-    public Date getTime() {
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getTime() {
         return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public int getPersonsCount() {
         return personsCount;
+    }
+
+    public void setPersonsCount(int personsCount) {
+        this.personsCount = personsCount;
     }
 }

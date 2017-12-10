@@ -22,7 +22,7 @@ public class BookingJdbcDao extends JdbcDaoSupport implements BookingDao {
                 "SELECT b.id AS bookingId, name AS userName, phone AS userPhone, personsCount, time\n" +
                 "FROM Bookings b, Users u WHERE\n" +
                 "b.userId = u.id AND\n" +
-                "time >= DATETIME('now');";
+                "time >= DATETIME('now')";
         List<Booking> bookings = new ArrayList<>();
         List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql);
         for (Map row : rows) {

@@ -9,6 +9,5 @@ public interface Handler {
     boolean matchCommand(Update update);
 
     SendMessage handle(Update update);
-
 }
 

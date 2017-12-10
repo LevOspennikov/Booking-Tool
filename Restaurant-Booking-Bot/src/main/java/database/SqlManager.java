@@ -28,9 +28,21 @@ public class SqlManager {
     }
 
     public void addBooking(Booking booking) {
-        String sql = "INSERT INTO Bookings(id, userId, personsCount, time) VALUES (%d, \"%s\", \"%s\", %t)";
-        executeUpdate(String.format(sql, booking.getId(), booking.getUserId(),
-                booking.getPersonsCount(), booking.getTime()));
+        String sql = "INSERT INTO Bookings(userId, personsCount, time) VALUES (%d, \"%s\", \"%s\")";
+        executeUpdate(String.format(sql, booking.getUserId(), booking.getPersonsCount(), booking.getTime()));
+    }
+
+    public User getUserById(Long id) {
+        String sql = "SELECT * FROM Users WHERE id = %d";
+        ResultSet rs = executeQuery(String.format(sql, id));
+        try {
+            if (!rs.next()) {
+                return null;
+            }
+            return new User(rs.getLong("id"), rs.getString("name"), rs.getString("phone"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void executeUpdate(String query) {

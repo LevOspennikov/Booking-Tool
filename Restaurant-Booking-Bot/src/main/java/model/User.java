@@ -1,23 +1,23 @@
 package model;
 
 public class User {
-    private int id;
+    private long id;
     private String name;
     private String phone;
 
     public User() {}
 
-    public User(int id, String name, String phone) {
+    public User(long id, String name, String phone) {
         this.id = id;
         this.name = name;
         this.phone = phone;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
