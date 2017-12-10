@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
         <junit.version>4.11</junit.version>
-        <sqlite-jdbc.version>3.8.11.2</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.19.3</sqlite-jdbc.version>
     </properties>
 
     <dependencies>

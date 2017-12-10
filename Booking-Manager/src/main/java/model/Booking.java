@@ -1,15 +1,13 @@
 package model;
 
-import java.util.Date;
-
 public class Booking {
     private int id;
     private String userName;
     private String userPhone;
-    private Date date;
+    private String date;
     private int personsCount;
 
-    public Booking(int id, String userName, String userPhone, Date date, int personsCount) {
+    public Booking(int id, String userName, String userPhone, String date, int personsCount) {
         this.id = id;
         this.userName = userName;
         this.userPhone = userPhone;
@@ -29,7 +27,7 @@ public class Booking {
         return userPhone;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 

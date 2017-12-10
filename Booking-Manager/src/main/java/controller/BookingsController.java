@@ -1,4 +1,4 @@
-package controler;
+package controller;
 
 import dao.BookingDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ public class BookingsController {
 
     @RequestMapping(value = "/get-bookings", method = RequestMethod.GET)
     public String getBookings(ModelMap map) {
-        return null;
+        map.addAttribute("bookings", bookingDao.getAvailableBookings());
+        return "index";
     }
 }
