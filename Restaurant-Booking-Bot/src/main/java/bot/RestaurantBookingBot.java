@@ -2,6 +2,7 @@ package bot;
 
 
 import handler.BookingHandler;
+import handler.ChangeBookingHandler;
 import handler.Handler;
 import handler.StartHandler;
 import org.telegram.telegrambots.api.objects.Update;
@@ -22,6 +23,7 @@ public class RestaurantBookingBot extends TelegramLongPollingBot {
     public RestaurantBookingBot(String botToken) {
         this.botToken = botToken;
         handlers.add(new StartHandler());
+        handlers.add(new ChangeBookingHandler());
         handlers.add(new BookingHandler());
     }
 

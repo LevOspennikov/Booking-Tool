@@ -5,8 +5,10 @@ import model.Booking;
 import model.User;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import resources.Keyboard;
 import resources.Message;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,10 +78,11 @@ public class BookingHandler implements Handler {
                     builder.append("Ваше бронирование на имя " + user.getName() + " добавлено. Информация по бронированию:\n")
                            .append("Телефон: " + user.getPhone() + "\n")
                            .append("Время: " + booking.getTime() + "\n")
-                           .append("Количество человек: " + booking.getPersonsCount() + "\n");
+                           .append("Количество человек: " + booking.getPersonsCount());
                     usersMap.remove(id);
                     bookingsMap.remove(id);
-                    return Message.makeReplyMessage(update, builder.toString());
+                    return Message.makeReplyMessage(update, builder.toString(),
+                            Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
                 }
             }
             return Message.makeReplyMessage(update, "Как ты сюда попал?");
@@ -142,7 +145,8 @@ public class BookingHandler implements Handler {
             String[] dateAndMonth = dateAndTime[0].split("(\\.|-)");
             date = Calendar.getInstance().get(Calendar.YEAR) + "-" + dateAndMonth[1] + "-" + dateAndMonth[0];
         } else {
-            date = Calendar.getInstance().get(Calendar.YEAR) + "-" + Calendar.getInstance().get(Calendar.MONTH) + "-" + Calendar.getInstance().get(Calendar.DATE);
+            date = Calendar.getInstance().get(Calendar.YEAR) + "-" +
+                    (Calendar.getInstance().get(Calendar.MONTH) + 1) + "-" + Calendar.getInstance().get(Calendar.DATE);
         }
         String time;
         int part = dateAndTime.length == 2 ? 1 : 0;

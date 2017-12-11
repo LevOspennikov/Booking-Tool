@@ -17,8 +17,9 @@ public class StartHandler implements Handler {
     @Override
     public SendMessage handle(Update update) {
         try {
-            return Message.makeReplyMessage(update, "Наш классный ресторан, можете забронировать столик",
-                    Keyboard.getKeyboard(Arrays.asList("Забронировать", "Информация")));
+            return Message.makeReplyMessage(update, "Приветствуем Вас в нашем ресторане \"Библиотека\" " +
+                            "по адресу г. Санкт-Петербург, пер. Вяземский, 3. Здесь Вы можете быстро и удобно забронировать столик.",
+                    Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Message.makeReplyMessage(update, "Что-то пошло не так");
