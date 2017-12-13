@@ -7,9 +7,10 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import resources.Keyboard;
 import resources.Message;
+import utils.Parsers;
+import utils.Validations;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,20 +34,25 @@ public class BookingHandler implements Handler {
             booking.setUserId(id);
             bookingsMap.put(id, booking);
             return true;
-        } else if (isNumber(message)) {
-            usersMap.get(id).setPhone(parseNumber(message));
-            return true;
-        } else if (isName(message)) {
-            usersMap.get(id).setName(parseName(message));
-            return true;
-        } else if (isTime(message)) {
-            bookingsMap.get(id).setTime(parseTime(message));
-            return true;
-        } else if (isPersonsCount(message)) {
-            bookingsMap.get(id).setPersonsCount(Integer.parseInt(message));
+        } else {
+            User user = usersMap.get(id);
+            Booking booking = bookingsMap.get(id);
+            if (booking == null) {
+                return false;
+            }
+            if (Validations.isPhoneNumber(message)) {
+               user.setPhone(Parsers.parsePhoneNumber(message));
+            } else if (Validations.isName(message)) {
+                user.setName(Parsers.parseName(message));
+            } else if (Validations.isTime(message)) {
+                booking.setTime(Parsers.parseTime(message));
+            } else if (Validations.isPersonsCount(message)) {
+                booking.setPersonsCount(Integer.parseInt(message));
+            } else {
+                return false;
+            }
             return true;
         }
-        return false;
     }
 
     @Override
@@ -90,68 +96,5 @@ public class BookingHandler implements Handler {
             e.printStackTrace();
             return Message.makeReplyMessage(update, "Что-то пошло не так");
         }
-    }
-
-    private boolean isNumber(String str) {
-        return str.matches("\\d?\\(\\d{3}\\)\\d{3}-?\\d{2}-?\\d{2}") ||
-                str.matches("\\d?-?\\d{3}-?\\d{3}-?\\d{2}-?\\d{2}");
-    }
-
-    private boolean isName(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            if (!Character.isLetter(str.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isTime(String str) {
-        return str.matches("(\\d{2}(\\.|-)\\d{2})?\\s*\\d{1,2}(-|:|\\.)\\d{1,2}");
-    }
-
-    private boolean isPersonsCount(String str) {
-        return str.matches("\\d+") && !"0".equals(str);
-    }
-
-    private String parseNumber(String str) {
-        StringBuilder number = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            if (Character.isDigit(str.charAt(i))) {
-                number.append(str.charAt(i));
-            }
-        }
-        if (number.length() == 10) {
-            number.insert(0, "8");
-        }
-        number.insert(1, "(");
-        number.insert(5, ")");
-        number.insert(9, "-");
-        number.insert(12, "-");
-        return number.toString();
-    }
-
-    private String parseName(String str) {
-        String name = "";
-        name += Character.toUpperCase(str.charAt(0));
-        name += str.substring(1);
-        return name;
-    }
-
-    private String parseTime(String str) {
-        String[] dateAndTime = str.split("\\s+");
-        String date;
-        if (dateAndTime.length == 2) {
-            String[] dateAndMonth = dateAndTime[0].split("(\\.|-)");
-            date = Calendar.getInstance().get(Calendar.YEAR) + "-" + dateAndMonth[1] + "-" + dateAndMonth[0];
-        } else {
-            date = Calendar.getInstance().get(Calendar.YEAR) + "-" +
-                    (Calendar.getInstance().get(Calendar.MONTH) + 1) + "-" + Calendar.getInstance().get(Calendar.DATE);
-        }
-        String time;
-        int part = dateAndTime.length == 2 ? 1 : 0;
-        String[] hoursAndMinutes =  dateAndTime[part].split("(-|:|\\.)");
-        time = hoursAndMinutes[0] + ":" + hoursAndMinutes[1];
-        return date + " " + time;
     }
 }

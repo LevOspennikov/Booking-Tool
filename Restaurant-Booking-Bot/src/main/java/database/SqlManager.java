@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class SqlManager {
+    private Connection connection;
+    private Statement stmt;
     private static SqlManager instance;
 
     private SqlManager() {}
@@ -30,7 +32,7 @@ public class SqlManager {
     }
 
     public void addBooking(Booking booking) {
-        String sql = "INSERT INTO Bookings(userId, personsCount, time) VALUES (%d, \"%s\", \"%s\")";
+        String sql = "INSERT INTO Bookings(userId, personsCount, time) VALUES (%d, %d, \"%s\")";
         executeUpdate(String.format(sql, booking.getUserId(), booking.getPersonsCount(), booking.getTime()));
     }
 
@@ -44,6 +46,24 @@ public class SqlManager {
             return new User(rs.getLong("id"), rs.getString("name"), rs.getString("phone"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
+        }
+    }
+
+    public Booking getBookingById(Long id) {
+        String sql = "SELECT * FROM Bookings WHERE id = %d";
+        ResultSet rs = executeQuery(String.format(sql, id));
+        try {
+            if (!rs.next()) {
+                return null;
+            }
+            return new Booking(rs.getInt("id"), rs.getLong("userId"),
+                    rs.getString("time"), rs.getInt("personsCount"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close();
         }
     }
 
@@ -59,7 +79,29 @@ public class SqlManager {
             return bookings;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
         }
+    }
+
+    public void changeUserName(long userId, String name) {
+        String sql = "UPDATE Users SET name = \"%s\" WHERE id = %d";
+        executeUpdate(String.format(sql, name, userId));
+    }
+
+    public void changeUserPhone(long userId, String phone) {
+        String sql = "UPDATE Users SET phone = \"%s\" WHERE id = %d";
+        executeUpdate(String.format(sql, phone, userId));
+    }
+
+    public void changeBookingTime(long bookingId, String time) {
+        String sql = "UPDATE Bookings SET time = \"%s\" WHERE id = %d";
+        executeUpdate(String.format(sql, time, bookingId));
+    }
+
+    public void changeBookingCount(long bookingId, int count) {
+        String sql = "UPDATE Bookings SET personsCount = %d WHERE id = %d";
+        executeUpdate(String.format(sql, count, bookingId));
     }
 
     private void executeUpdate(String query) {
@@ -68,6 +110,8 @@ public class SqlManager {
                 return statement.executeUpdate(sqlQuery);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            } finally {
+                close();
             }
         });
     }
@@ -85,9 +129,18 @@ public class SqlManager {
     private <T> T execute(String query, BiFunction<Statement, String, T> function) {
         String address = "jdbc:sqlite:../bookings.db";
         try {
-            Connection connection = DriverManager.getConnection(address);
-            Statement stmt = connection.createStatement();
+            connection = DriverManager.getConnection(address);
+            stmt = connection.createStatement();
             return function.apply(stmt, query);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void close() {
+        try {
+            stmt.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -10,9 +10,9 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Main {
-    public static String PROPERTIES_FILE = ".properties";
+    private static String PROPERTIES_FILE = ".properties";
 
-    public static Properties readProperties() {
+    private static Properties readProperties() {
         Properties prop = new Properties();
         InputStream input;
 

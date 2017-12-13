@@ -1,10 +1,7 @@
 package bot;
 
 
-import handler.BookingHandler;
-import handler.ChangeBookingHandler;
-import handler.Handler;
-import handler.StartHandler;
+import handler.*;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -13,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantBookingBot extends TelegramLongPollingBot {
-
     private final String botUsername = "RestaurantBookingBot";
     private String botToken;
 
@@ -25,6 +21,7 @@ public class RestaurantBookingBot extends TelegramLongPollingBot {
         handlers.add(new StartHandler());
         handlers.add(new ChangeBookingHandler());
         handlers.add(new BookingHandler());
+        handlers.add(new ErrorHandler());
     }
 
     public void onUpdateReceived(Update update) {
