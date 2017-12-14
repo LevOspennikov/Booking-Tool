@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<h3>All bookings</h3>
+<h2>All bookings</h2>
 
 <p>Total count of bookings: ${bookings.size()}</p>
 
@@ -30,6 +30,20 @@
         </tr>
     </c:forEach>
 </table>
+
+<h2>Edit booking</h2>
+<form:form modelAttribute="booking" method="GET">
+    <table>
+        <tr>
+            <td>Select booking: </td>
+            <td><form:select path="id">
+                <form:options items="${bookings}" itemValue="id" itemLabel="bookingDescription" />
+            </form:select></td>
+            <td><input type="submit" value="Edit" onclick="form.action='/edit-booking';"></td>
+            <td><input type="submit" value="Delete" onclick="form.action='/remove-booking';"></td>
+        </tr>
+    </table>
+</form:form>
 
 </body>
 </html>
