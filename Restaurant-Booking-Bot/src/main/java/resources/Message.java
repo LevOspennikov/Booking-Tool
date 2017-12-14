@@ -13,4 +13,8 @@ public class Message {
     public static SendMessage makeReplyMessage(Update update, String text) {
         return new SendMessage().setChatId(update.getMessage().getChatId()).setText(text);
     }
+
+    public static SendMessage makeReplyMessageFromId(Long chatId, String text) {
+        return new SendMessage().setChatId(chatId).setText(text);
+    }
 }

@@ -2,6 +2,7 @@ package bot;
 
 
 import handler.*;
+import notifier.SubscriberNotifier;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -20,7 +21,7 @@ public class RestaurantBookingBot extends TelegramLongPollingBot {
         this.botToken = botToken;
         handlers.add(new StartHandler());
         handlers.add(new ChangeBookingHandler());
-        handlers.add(new BookingHandler());
+        handlers.add(new BookingHandler(new SubscriberNotifier(this)));
         handlers.add(new ErrorHandler());
     }
 

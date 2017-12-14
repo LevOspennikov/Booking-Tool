@@ -1,5 +1,7 @@
 package handler;
 
+import model.SubscribeType;
+import notifier.SubscriberNotifier;
 import constants.Messages;
 import database.SqlManager;
 import model.Booking;
@@ -19,6 +21,14 @@ public class BookingHandler implements Handler {
     private Map<Long, Booking> bookingsMap = new HashMap<>();
     private SqlManager sqlManager = SqlManager.getInstance();
     private boolean error = false;
+    private SubscriberNotifier subscriberNotifier;
+
+    public BookingHandler() {
+    }
+
+    public BookingHandler(SubscriberNotifier info) {
+        subscriberNotifier = info;
+    }
 
     @Override
     public boolean matchCommand(Update update) {
@@ -92,6 +102,8 @@ public class BookingHandler implements Handler {
                            .append("Количество человек: " + booking.getPersonsCount());
                     usersMap.remove(id);
                     bookingsMap.remove(id);
+                    subscriberNotifier.addSubscriber(Long.toString(user.getId()), SubscribeType.TELEGRAM);
+                    subscriberNotifier.notifySubscribers(builder.toString());
                     return Message.makeReplyMessage(update, builder.toString(), Keyboard.getKeyboard(getDefaultButtons()));
                 }
             }
