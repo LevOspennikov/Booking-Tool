@@ -77,7 +77,7 @@ public class ChangeBookingHandler implements Handler {
         if (booking == null) {
             List<Booking> bookings = sqlManager.getUserBookings(chatId);
             if (bookings.isEmpty()) {
-                return Message.makeReplyMessage(update, Messages.NO_BOOKINGS_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
+                return Message.makeReplyMessage(update, Messages.NO_BOOKINGS_ERROR, Keyboard.DEFAULT_KEYBOARD);
             }
             List<String> buttons = bookings.stream().map(b ->
                     "Id: " + b.getId() + ", " + b.getTime() + ", " + b.getPersonsCount() + " чел.").collect(Collectors.toList());
@@ -100,7 +100,7 @@ public class ChangeBookingHandler implements Handler {
                     bookingMap.remove(chatId);
                     parameters.remove(chatId);
                     changedBookings.remove(chatId);
-                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.getKeyboard(getDefaultButtons()));
+                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.DEFAULT_KEYBOARD);
                 }
             }
         }

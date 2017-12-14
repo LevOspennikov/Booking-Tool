@@ -16,7 +16,7 @@ public class StartHandler implements Handler {
     @Override
     public SendMessage handle(Update update) {
         try {
-            return Message.makeReplyMessage(update, Messages.GREETING, Keyboard.getKeyboard(getDefaultButtons()));
+            return Message.makeReplyMessage(update, Messages.GREETING, Keyboard.DEFAULT_KEYBOARD);
         } catch (RuntimeException e) {
             e.printStackTrace();
             return Message.makeReplyMessage(update, Messages.INTERNAL_ERROR);

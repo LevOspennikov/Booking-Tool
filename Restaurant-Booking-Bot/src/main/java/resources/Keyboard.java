@@ -1,16 +1,16 @@
 package resources;
 
+import constants.Messages;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by ospen on 12/8/2017.
- */
-
 public class Keyboard {
+
+    public static ReplyKeyboardMarkup DEFAULT_KEYBOARD = getKeyboard(Arrays.asList(Messages.BOOK, Messages.CHANGE_BOOKING));
 
     public static ReplyKeyboardMarkup getKeyboard(List<String> buttons) {
         int rows = (buttons.size() - 1) / 3 + 1;

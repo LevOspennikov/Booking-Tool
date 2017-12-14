@@ -13,9 +13,5 @@ public interface Handler {
     boolean matchCommand(Update update);
 
     SendMessage handle(Update update);
-
-    default List<String> getDefaultButtons() {
-        return Arrays.asList(Messages.BOOK, Messages.CHANGE_BOOKING);
-    }
 }
 

@@ -104,13 +104,13 @@ public class BookingHandler implements Handler {
                     bookingsMap.remove(id);
                     subscriberNotifier.addSubscriber(Long.toString(user.getId()), SubscribeType.TELEGRAM);
                     subscriberNotifier.notifySubscribers(builder.toString());
-                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.getKeyboard(getDefaultButtons()));
+                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.DEFAULT_KEYBOARD);
                 }
             }
-            return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
+            return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.DEFAULT_KEYBOARD);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return Message.makeReplyMessage(update, Messages.INTERNAL_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
+            return Message.makeReplyMessage(update, Messages.INTERNAL_ERROR, Keyboard.DEFAULT_KEYBOARD);
         }
     }
 }

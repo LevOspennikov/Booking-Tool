@@ -15,6 +15,6 @@ public class ErrorHandler implements Handler {
 
     @Override
     public SendMessage handle(Update update) {
-        return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
+        return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.DEFAULT_KEYBOARD);
     }
 }
