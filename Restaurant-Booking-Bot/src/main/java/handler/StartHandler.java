@@ -1,11 +1,10 @@
 package handler;
 
-import resources.Keyboard;
-import resources.Message;
+import constants.Messages;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
-
-import java.util.Arrays;
+import resources.Keyboard;
+import resources.Message;
 
 public class StartHandler implements Handler {
 
@@ -17,12 +16,10 @@ public class StartHandler implements Handler {
     @Override
     public SendMessage handle(Update update) {
         try {
-            return Message.makeReplyMessage(update, "Приветствуем Вас в нашем ресторане \"Библиотека\" " +
-                            "по адресу г. Санкт-Петербург, пер. Вяземский, 3. Здесь Вы можете быстро и удобно забронировать столик.",
-                    Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
-        } catch (IllegalArgumentException e) {
+            return Message.makeReplyMessage(update, Messages.GREETING, Keyboard.getKeyboard(getDefaultButtons()));
+        } catch (RuntimeException e) {
             e.printStackTrace();
-            return Message.makeReplyMessage(update, "Что-то пошло не так");
+            return Message.makeReplyMessage(update, Messages.INTERNAL_ERROR);
         }
     }
 }

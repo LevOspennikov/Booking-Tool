@@ -1,5 +1,6 @@
 package handler;
 
+import constants.Messages;
 import database.SqlManager;
 import model.Booking;
 import model.User;
@@ -10,7 +11,6 @@ import resources.Message;
 import utils.Parsers;
 import utils.Validations;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,12 +18,13 @@ public class BookingHandler implements Handler {
     private Map<Long, User> usersMap = new HashMap<>();
     private Map<Long, Booking> bookingsMap = new HashMap<>();
     private SqlManager sqlManager = SqlManager.getInstance();
+    private boolean error = false;
 
     @Override
     public boolean matchCommand(Update update) {
         long id = update.getMessage().getChatId();
         String message = update.getMessage().getText();
-        if ("Забронировать".equals(message)) {
+        if (Messages.BOOK.equals(message)) {
             User user = sqlManager.getUserById(id);
             if (user == null) {
                 user = new User();
@@ -40,16 +41,16 @@ public class BookingHandler implements Handler {
             if (booking == null) {
                 return false;
             }
-            if (Validations.isPhoneNumber(message)) {
+            if (user != null && Validations.isPhoneNumber(message)) {
                user.setPhone(Parsers.parsePhoneNumber(message));
-            } else if (Validations.isName(message)) {
+            } else if (user != null && Validations.isName(message)) {
                 user.setName(Parsers.parseName(message));
             } else if (Validations.isTime(message)) {
                 booking.setTime(Parsers.parseTime(message));
             } else if (Validations.isPersonsCount(message)) {
                 booking.setPersonsCount(Integer.parseInt(message));
             } else {
-                return false;
+                error = true;
             }
             return true;
         }
@@ -58,6 +59,10 @@ public class BookingHandler implements Handler {
     @Override
     public SendMessage handle(Update update) {
         try {
+            if (error) {
+                error = false;
+                return Message.makeReplyMessage(update, Messages.INCORRECT_VALUE);
+            }
             long id = update.getMessage().getChatId();
             User user = usersMap.get(id);
             boolean userExists = user == null;
@@ -65,16 +70,16 @@ public class BookingHandler implements Handler {
                 user = sqlManager.getUserById(id);
             }
             if (user.getName() == null) {
-                return Message.makeReplyMessage(update, "Пожалуйста, напишите Ваше имя");
+                return Message.makeReplyMessage(update, Messages.ENTER_NAME);
             } else if (user.getPhone() == null) {
-                return Message.makeReplyMessage(update, "Пожалуйста, укажите Ваш номер телефона");
+                return Message.makeReplyMessage(update, Messages.ENTER_PHONE);
             }
             Booking booking = bookingsMap.get(id);
             if (booking != null) {
                 if (booking.getTime() == null) {
-                    return Message.makeReplyMessage(update, "Пожалуйста, укажите время");
+                    return Message.makeReplyMessage(update, Messages.ENTER_TIME);
                 } else if (booking.getPersonsCount() == 0) {
-                    return Message.makeReplyMessage(update, "Пожалуйста, укажите колическтво персон");
+                    return Message.makeReplyMessage(update, Messages.ENTER_COUNT);
                 } else {
                     if (!userExists) {
                         sqlManager.addUser(user);
@@ -87,14 +92,13 @@ public class BookingHandler implements Handler {
                            .append("Количество человек: " + booking.getPersonsCount());
                     usersMap.remove(id);
                     bookingsMap.remove(id);
-                    return Message.makeReplyMessage(update, builder.toString(),
-                            Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
+                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.getKeyboard(getDefaultButtons()));
                 }
             }
-            return Message.makeReplyMessage(update, "Как ты сюда попал?");
-        } catch (IllegalArgumentException e) {
+            return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
+        } catch (RuntimeException e) {
             e.printStackTrace();
-            return Message.makeReplyMessage(update, "Что-то пошло не так");
+            return Message.makeReplyMessage(update, Messages.INTERNAL_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
         }
     }
 }

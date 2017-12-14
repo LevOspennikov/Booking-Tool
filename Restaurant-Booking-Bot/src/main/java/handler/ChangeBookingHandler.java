@@ -1,5 +1,6 @@
 package handler;
 
+import constants.Messages;
 import database.SqlManager;
 import model.Booking;
 import model.User;
@@ -23,19 +24,20 @@ public class ChangeBookingHandler implements Handler {
     private Set<Long> changedBookings = new HashSet<>();
     private Map<Long, String> parameters = new HashMap<>();
     private SqlManager sqlManager = SqlManager.getInstance();
+    private boolean error = false;
 
     @Override
     public boolean matchCommand(Update update) {
         String message = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
-        if ("Изменить бронирование".equals(message)) {
+        if (Messages.CHANGE_BOOKING.equals(message)) {
             bookingMap.put(chatId, null);
             return true;
         } if (Validations.isBookingDescription(message)) {
             bookingMap.put(chatId, sqlManager.getBookingById(Parsers.parseBookingId(message)));
             return true;
-        } if ("Имя".equals(message) || "Телефон".equals(message) ||
-                "Время".equals(message) || "Количество человек".equals(message)) {
+        } if (Messages.NAME.equals(message) || Messages.PHONE.equals(message) ||
+                Messages.TIME.equals(message) || Messages.COUNT.equals(message)) {
             parameters.put(chatId, message);
             return true;
         } else {
@@ -43,20 +45,21 @@ public class ChangeBookingHandler implements Handler {
             if (booking == null) {
                 return false;
             }
-            if ("Имя".equals(parameters.get(chatId)) && Validations.isName(message)) {
+            if (Messages.NAME.equals(parameters.get(chatId)) && Validations.isName(message)) {
                 sqlManager.changeUserName(booking.getUserId(), Parsers.parseName(message));
-            } else if ("Телефон".equals(parameters.get(chatId)) && Validations.isPhoneNumber(message)) {
+            } else if (Messages.PHONE.equals(parameters.get(chatId)) && Validations.isPhoneNumber(message)) {
                 sqlManager.changeUserPhone(booking.getUserId(), Parsers.parsePhoneNumber(message));
-            } else if ("Время".equals(parameters.get(chatId)) && Validations.isTime(message)) {
+            } else if (Messages.TIME.equals(parameters.get(chatId)) && Validations.isTime(message)) {
                 String newTime = Parsers.parseTime(message);
                 sqlManager.changeBookingTime(booking.getId(), newTime);
                 booking.setTime(newTime);
-            } else if ("Количество человек".equals(parameters.get(chatId)) && Validations.isPersonsCount(message)) {
+            } else if (Messages.COUNT.equals(parameters.get(chatId)) && Validations.isPersonsCount(message)) {
                 int newCount = Integer.parseInt(message);
                 sqlManager.changeBookingCount(booking.getId(), newCount);
                 booking.setPersonsCount(newCount);
             } else {
-                return false;
+                error = true;
+                return true;
             }
             changedBookings.add(chatId);
             return true;
@@ -65,25 +68,27 @@ public class ChangeBookingHandler implements Handler {
 
     @Override
     public SendMessage handle(Update update) {
+        if (error) {
+            error = false;
+            return Message.makeReplyMessage(update, Messages.INCORRECT_VALUE);
+        }
         long chatId = update.getMessage().getChatId();
         Booking booking = bookingMap.get(chatId);
         if (booking == null) {
             List<Booking> bookings = sqlManager.getUserBookings(chatId);
             if (bookings.isEmpty()) {
-                return Message.makeReplyMessage(update, "У Вас нет активных бронирований",
-                        Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
+                return Message.makeReplyMessage(update, Messages.NO_BOOKINGS_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
             }
             List<String> buttons = bookings.stream().map(b ->
                     "Id: " + b.getId() + ", " + b.getTime() + ", " + b.getPersonsCount() + " чел.").collect(Collectors.toList());
-            return Message.makeReplyMessage(update,
-                    "Выберите бронирование, которое хотите изменить", Keyboard.getKeyboard(buttons));
+            return Message.makeReplyMessage(update, Messages.SELECT_BOOKING_TO_CHANGE, Keyboard.getKeyboard(buttons));
         } else {
             if (!parameters.containsKey(chatId)) {
-                return Message.makeReplyMessage(update, "Выберите, какой параметр нужно изменить",
-                        Keyboard.getKeyboard(Arrays.asList("Имя", "Телефон", "Время", "Количество человек")));
+                return Message.makeReplyMessage(update, Messages.SELECT_PARAMETER_TO_CHANGE,
+                        Keyboard.getKeyboard(Arrays.asList(Messages.NAME, Messages.PHONE, Messages.TIME, Messages.COUNT)));
             } else {
                 if (!changedBookings.contains(chatId)) {
-                    return Message.makeReplyMessage(update, "Введите новое значение");
+                    return Message.makeReplyMessage(update, Messages.ENTER_NEW_VAL);
                 } else {
                     User user = sqlManager.getUserById(chatId);
                     StringBuilder builder = new StringBuilder();
@@ -95,8 +100,7 @@ public class ChangeBookingHandler implements Handler {
                     bookingMap.remove(chatId);
                     parameters.remove(chatId);
                     changedBookings.remove(chatId);
-                    return Message.makeReplyMessage(update, builder.toString(),
-                            Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
+                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.getKeyboard(getDefaultButtons()));
                 }
             }
         }

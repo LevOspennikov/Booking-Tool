@@ -1,11 +1,10 @@
 package handler;
 
+import constants.Messages;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import resources.Keyboard;
 import resources.Message;
-
-import java.util.Arrays;
 
 public class ErrorHandler implements Handler {
 
@@ -16,7 +15,6 @@ public class ErrorHandler implements Handler {
 
     @Override
     public SendMessage handle(Update update) {
-        return Message.makeReplyMessage(update, "Не удалось распознать запрос. Пожалуйста, попробуйте снова",
-                Keyboard.getKeyboard(Arrays.asList("Забронировать", "Изменить бронирование")));
+        return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.getKeyboard(getDefaultButtons()));
     }
 }
