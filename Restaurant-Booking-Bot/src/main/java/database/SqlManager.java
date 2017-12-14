@@ -67,6 +67,22 @@ public class SqlManager {
         }
     }
 
+    public List<User> getAllUsers() {
+        String sql = "SELECT * FROM Users";
+        ResultSet rs = executeQuery(sql);
+        List<User> users = new ArrayList<>();
+        try {
+            while (rs.next()) {
+                users.add(new User(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
+            }
+            return users;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close();
+        }
+    }
+
     public List<Booking> getUserBookings(Long userId) {
         String sql = "SELECT * FROM Bookings WHERE userId = %d AND time >= DATETIME('now')";
         ResultSet rs = executeQuery(String.format(sql, userId));

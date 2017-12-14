@@ -1,25 +1,25 @@
 package model;
 
 public class Booking {
-    private int id;
+    private long id;
     private long userId;
     private String time;
     private int personsCount;
 
     public Booking() {};
 
-    public Booking(int id, long userId, String time, int personsCount) {
+    public Booking(long id, long userId, String time, int personsCount) {
         this.id = id;
         this.userId = userId;
         this.time = time;
         this.personsCount = personsCount;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
