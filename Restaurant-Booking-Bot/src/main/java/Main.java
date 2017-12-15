@@ -15,11 +15,9 @@ public class Main {
     private static Properties readProperties() {
         Properties prop = new Properties();
         InputStream input;
-
         try {
             input = new FileInputStream(PROPERTIES_FILE);
             prop.load(input);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -30,7 +28,6 @@ public class Main {
         Properties properties = readProperties();
         ApiContextInitializer.init();
         TelegramBotsApi botsApi = new TelegramBotsApi();
-
         try {
             botsApi.registerBot(new RestaurantBookingBot(properties.getProperty("apiKey")));
         } catch (TelegramApiException e) {

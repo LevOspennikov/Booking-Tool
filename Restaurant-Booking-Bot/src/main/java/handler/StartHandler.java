@@ -10,7 +10,7 @@ public class StartHandler implements Handler {
 
     @Override
     public boolean matchCommand(Update update) {
-        return update.getMessage().getText().equals("/start") || update.getMessage().getText().equals("/back");
+        return update.getMessage().getText().equals("/start");
     }
 
     @Override
