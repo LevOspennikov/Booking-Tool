@@ -1,11 +1,10 @@
 package handler;
 
-import model.SubscribeType;
-import notifier.SubscriberNotifier;
 import constants.Messages;
 import database.SqlManager;
 import model.Booking;
 import model.User;
+import notifier.SubscriberNotifier;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import resources.Keyboard;
@@ -19,12 +18,12 @@ import java.util.Map;
 public class BookingHandler implements Handler {
     private Map<Long, User> usersMap = new HashMap<>();
     private Map<Long, Booking> bookingsMap = new HashMap<>();
+    private Map<Long, String> parameters = new HashMap<>();
     private SqlManager sqlManager = SqlManager.getInstance();
     private boolean error = false;
     private SubscriberNotifier subscriberNotifier;
 
-    public BookingHandler() {
-    }
+    public BookingHandler() {}
 
     public BookingHandler(SubscriberNotifier info) {
         subscriberNotifier = info;
@@ -48,16 +47,17 @@ public class BookingHandler implements Handler {
         } else {
             User user = usersMap.get(id);
             Booking booking = bookingsMap.get(id);
-            if (booking == null) {
+            String parameter = parameters.get(id);
+            if (booking == null || parameter == null) {
                 return false;
             }
-            if (user != null && Validations.isPhoneNumber(message)) {
-               user.setPhone(Parsers.parsePhoneNumber(message));
-            } else if (user != null && Validations.isName(message)) {
+            if (user != null && Messages.NAME.equals(parameter) && Validations.isName(message)) {
                 user.setName(Parsers.parseName(message));
-            } else if (Validations.isTime(message)) {
+            } else if (user != null && Messages.PHONE.equals(parameter) && Validations.isPhoneNumber(message)) {
+               user.setPhone(Parsers.parsePhoneNumber(message));
+            } else if (Messages.TIME.equals(parameter) && Validations.isTime(message)) {
                 booking.setTime(Parsers.parseTime(message));
-            } else if (Validations.isPersonsCount(message)) {
+            } else if (Messages.COUNT.equals(parameter) && Validations.isPersonsCount(message)) {
                 booking.setPersonsCount(Integer.parseInt(message));
             } else {
                 error = true;
@@ -80,15 +80,19 @@ public class BookingHandler implements Handler {
                 user = sqlManager.getUserById(id);
             }
             if (user.getName() == null) {
+                parameters.put(id, Messages.NAME);
                 return Message.makeReplyMessage(update, Messages.ENTER_NAME);
             } else if (user.getPhone() == null) {
+                parameters.put(id, Messages.PHONE);
                 return Message.makeReplyMessage(update, Messages.ENTER_PHONE);
             }
             Booking booking = bookingsMap.get(id);
             if (booking != null) {
                 if (booking.getTime() == null) {
+                    parameters.put(id, Messages.TIME);
                     return Message.makeReplyMessage(update, Messages.ENTER_TIME);
                 } else if (booking.getPersonsCount() == 0) {
+                    parameters.put(id, Messages.COUNT);
                     return Message.makeReplyMessage(update, Messages.ENTER_COUNT);
                 } else {
                     if (!userExists) {
@@ -102,8 +106,8 @@ public class BookingHandler implements Handler {
                            .append("Количество человек: " + booking.getPersonsCount());
                     usersMap.remove(id);
                     bookingsMap.remove(id);
-                    subscriberNotifier.addSubscriber(Long.toString(user.getId()), SubscribeType.TELEGRAM);
-                    subscriberNotifier.notifySubscribers(builder.toString());
+//                    subscriberNotifier.addSubscriber(Long.toString(user.getId()), SubscribeType.TELEGRAM);
+//                    subscriberNotifier.notifySubscribers(builder.toString());
                     return Message.makeReplyMessage(update, builder.toString(), Keyboard.DEFAULT_KEYBOARD);
                 }
             }

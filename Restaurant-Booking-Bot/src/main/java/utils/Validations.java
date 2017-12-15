@@ -4,7 +4,7 @@ package utils;
 public class Validations {
 
     public static boolean isBookingDescription(String str) {
-        return str.matches("Id: \\d+, \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}, \\d+ чел.");
+        return str.matches("Id: \\d+, \\d{4}-\\d{2}-\\d{2} \\d{1,2}:\\d{2}, \\d+ чел.");
     }
 
     public static boolean isPhoneNumber(String str) {
@@ -22,10 +22,10 @@ public class Validations {
     }
 
     public static boolean isTime(String str) {
-        return str.matches("(\\d{2}(\\.|-)\\d{2})?\\s*\\d{1,2}(-|:|\\.)\\d{1,2}");
+        return str.matches("(\\d{2}(\\.|-)\\d{2})?\\s*\\d{1,2}(-|:|\\.)\\d{2}");
     }
 
     public static boolean isPersonsCount(String str) {
-        return str.matches("\\d+") && !"0".equals(str);
+        return str.matches("\\d{1,2}") && !"0".equals(str);
     }
 }
