@@ -13,8 +13,8 @@ public class Subscriber {
         this.type = SubscriptionType.valueOf(type);
     }
 
-    public String getSubscriptionType() {
-        return type.toString();
+    public SubscriptionType getSubscriptionType() {
+        return type;
     }
 
     public String getSubscriberContact() {

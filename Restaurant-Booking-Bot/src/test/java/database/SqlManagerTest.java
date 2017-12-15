@@ -43,7 +43,6 @@ public class SqlManagerTest {
             Assert.assertNotNull(subscriber.getSubscriberContact());
             Assert.assertFalse(subscriber.getSubscriberContact().isEmpty());
             Assert.assertNotNull(subscriber.getSubscriptionType());
-            Assert.assertFalse(subscriber.getSubscriptionType().isEmpty());
         }
     }
 }

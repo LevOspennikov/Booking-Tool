@@ -2,11 +2,11 @@ package notifier;
 
 import bot.RestaurantBookingBot;
 import model.Subscriber;
+import model.SubscriptionType;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import resources.Message;
 
 class TelegramMessageSender implements MessageSender {
-
     private RestaurantBookingBot bot;
 
     TelegramMessageSender(RestaurantBookingBot bot) {
