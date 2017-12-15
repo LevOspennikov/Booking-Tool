@@ -16,6 +16,8 @@ public class SubscriberNotifier {
 
     public SubscriberNotifier(RestaurantBookingBot bot) {
         this.messageSenders.put("TELEGRAM", new TelegramMessageSender(bot));
+        this.messageSenders.put("MAIL", new MailMessageSender());
+        this.subscribers.add(new Subscriber("ospennikovlev@gmail.com", "MAIL"));
     }
 
     public void notifySubscribers(String message) {

@@ -99,16 +99,14 @@ public class BookingHandler implements Handler {
                         sqlManager.addUser(user);
                     }
                     sqlManager.addBooking(booking);
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("Ваше бронирование на имя " + user.getName() + " добавлено. Информация по бронированию:\n")
-                           .append("Телефон: " + user.getPhone() + "\n")
-                           .append("Время: " + booking.getTime() + "\n")
-                           .append("Количество человек: " + booking.getPersonsCount());
+                    String addBookingResponse = Messages.addBookingMessage(user.getName(), user.getPhone(),
+                            booking.getTime(), Integer.toString(booking.getPersonsCount()));
+                    String newBookingResponse = Messages.newBookingMessage(user.getName(), user.getPhone(),
+                            booking.getTime(), Integer.toString(booking.getPersonsCount()));
                     usersMap.remove(id);
                     bookingsMap.remove(id);
-//                    subscriberNotifier.addSubscriber(Long.toString(user.getId()), SubscribeType.TELEGRAM);
-//                    subscriberNotifier.notifySubscribers(builder.toString());
-                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.DEFAULT_KEYBOARD);
+                    subscriberNotifier.notifySubscribers(newBookingResponse);
+                    return Message.makeReplyMessage(update, addBookingResponse, Keyboard.DEFAULT_KEYBOARD);
                 }
             }
             return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.DEFAULT_KEYBOARD);

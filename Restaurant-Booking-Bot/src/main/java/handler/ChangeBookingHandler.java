@@ -4,6 +4,7 @@ import constants.Messages;
 import database.SqlManager;
 import model.Booking;
 import model.User;
+import notifier.SubscriberNotifier;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import resources.Keyboard;
@@ -25,6 +26,13 @@ public class ChangeBookingHandler implements Handler {
     private Map<Long, String> parameters = new HashMap<>();
     private SqlManager sqlManager = SqlManager.getInstance();
     private boolean error = false;
+    private SubscriberNotifier subscriberNotifier;
+
+    public ChangeBookingHandler() {}
+
+    public ChangeBookingHandler(SubscriberNotifier info) {
+        subscriberNotifier = info;
+    }
 
     @Override
     public boolean matchCommand(Update update) {
@@ -91,16 +99,15 @@ public class ChangeBookingHandler implements Handler {
                     return Message.makeReplyMessage(update, Messages.ENTER_NEW_VAL);
                 } else {
                     User user = sqlManager.getUserById(chatId);
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("Ваше бронирование изменено. Информация по бронированию:\n")
-                            .append("Имя: " + user.getName() + "\n")
-                            .append("Телефон: " + user.getPhone() + "\n")
-                            .append("Время: " + booking.getTime() + "\n")
-                            .append("Количество человек: " + booking.getPersonsCount());
+                    String changeBookingResponse = Messages.changeBookingMessage(user.getName(), user.getPhone(),
+                            booking.getTime(), Integer.toString(booking.getPersonsCount()));
+                    String newBookingResponse = Messages.newBookingMessage(user.getName(), user.getPhone(),
+                            booking.getTime(), Integer.toString(booking.getPersonsCount()));
+                    subscriberNotifier.notifySubscribers(newBookingResponse);
                     bookingMap.remove(chatId);
                     parameters.remove(chatId);
                     changedBookings.remove(chatId);
-                    return Message.makeReplyMessage(update, builder.toString(), Keyboard.DEFAULT_KEYBOARD);
+                    return Message.makeReplyMessage(update, changeBookingResponse, Keyboard.DEFAULT_KEYBOARD);
                 }
             }
         }
