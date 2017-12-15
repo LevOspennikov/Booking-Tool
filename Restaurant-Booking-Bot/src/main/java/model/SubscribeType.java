@@ -1,3 +1,3 @@
 package model;
 
-public enum SubscribeType { TELEGRAM, EMAIL}
+public enum SubscribeType { TELEGRAM, MAIL}

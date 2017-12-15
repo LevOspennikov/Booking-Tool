@@ -4,6 +4,7 @@ import constants.Messages;
 import database.SqlManager;
 import model.Booking;
 import model.User;
+import notifier.SubscriberNotifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,8 @@ public class ChangeBookingHandlerTest {
     private Message message;
     @Mock
     private SqlManager sqlManager;
+    @Mock
+    private SubscriberNotifier subscriberNotifier;
 
     @Before
     public void init() {
@@ -35,6 +38,7 @@ public class ChangeBookingHandlerTest {
         when(sqlManager.getUserBookings(id)).thenReturn(Collections.singletonList(booking));
         when(sqlManager.getUserById(id)).thenReturn(new User(1L, "Anna", "89819510000"));
         Whitebox.setInternalState(changeBookingHandler, "sqlManager", sqlManager);
+        Whitebox.setInternalState(changeBookingHandler, "subscriberNotifier", subscriberNotifier);
         when(update.getMessage()).thenReturn(message);
     }
 

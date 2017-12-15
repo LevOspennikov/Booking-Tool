@@ -19,9 +19,10 @@ public class RestaurantBookingBot extends TelegramLongPollingBot {
 
     public RestaurantBookingBot(String botToken) {
         this.botToken = botToken;
+        SubscriberNotifier subscriberNotifier = new SubscriberNotifier(this);
         handlers.add(new StartHandler());
-        handlers.add(new ChangeBookingHandler());
-        handlers.add(new BookingHandler(new SubscriberNotifier(this)));
+        handlers.add(new ChangeBookingHandler(subscriberNotifier));
+        handlers.add(new BookingHandler(subscriberNotifier));
         handlers.add(new ErrorHandler());
     }
 

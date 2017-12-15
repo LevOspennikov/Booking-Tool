@@ -20,4 +20,30 @@ public class Messages {
     public static final String INTERNAL_ERROR = "Произошла внутренняя ошибка. Пожалуйста, попробуйте еще раз";
     public static final String PARSER_ERROR = "Не удалось распознать запрос. Пожалуйста, попробуйте снова";
     public static final String INCORRECT_VALUE = "Введенное значение некорректно. Пожалуйста, попробуйте снова";
+
+    public static String addBookingMessage(String user, String phone, String time, String count) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Ваше бронирование на имя ").append(user).append(" добавлено. Информация по бронированию:\n");
+        return endPartBookingMessage(builder, phone, time, count);
+    }
+
+    public static String newBookingMessage(String user, String phone, String time, String count) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Новое бронирование на имя ").append(user).append(" добавлено. Информация по бронированию:\n");
+        return endPartBookingMessage(builder, phone, time, count);
+    }
+
+    public static String changeBookingMessage(String user, String phone, String time, String count) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Ваше бронирование изменено. Информация по бронированию:\n")
+                .append("Имя: ").append(user).append("\n");
+        return endPartBookingMessage(builder, phone, time, count);
+    }
+
+    private static String endPartBookingMessage(StringBuilder builder, String phone, String time, String count) {
+        builder.append("Телефон: ").append(phone).append("\n")
+                .append("Время: ").append(time).append("\n")
+                .append("Количество человек: ").append(count);
+        return builder.toString();
+    }
 }
