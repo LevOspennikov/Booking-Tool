@@ -99,14 +99,14 @@ public class BookingHandler implements Handler {
                         sqlManager.addUser(user);
                     }
                     sqlManager.addBooking(booking);
-                    String addBookingResponse = Messages.addBookingMessage(user.getName(), user.getPhone(),
+                    String respondToUser = Messages.addBookingMessage(user.getName(), user.getPhone(),
                             booking.getTime(), Integer.toString(booking.getPersonsCount()));
-                    String newBookingResponse = Messages.newBookingMessage(user.getName(), user.getPhone(),
+                    String notifyAdminsMsg = Messages.newBookingMessage(user.getName(), user.getPhone(),
                             booking.getTime(), Integer.toString(booking.getPersonsCount()));
                     usersMap.remove(id);
                     bookingsMap.remove(id);
-                    subscriberNotifier.notifySubscribers(newBookingResponse);
-                    return Message.makeReplyMessage(update, addBookingResponse, Keyboard.DEFAULT_KEYBOARD);
+                    subscriberNotifier.notifySubscribers(notifyAdminsMsg);
+                    return Message.makeReplyMessage(update, respondToUser, Keyboard.DEFAULT_KEYBOARD);
                 }
             }
             return Message.makeReplyMessage(update, Messages.PARSER_ERROR, Keyboard.DEFAULT_KEYBOARD);
