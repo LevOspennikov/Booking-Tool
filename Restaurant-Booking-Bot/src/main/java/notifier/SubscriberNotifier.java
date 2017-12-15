@@ -15,8 +15,8 @@ public class SubscriberNotifier {
     private Map<SubscriptionType, MessageSender> messageSenders = new HashMap<>();
 
     public SubscriberNotifier(RestaurantBookingBot bot) {
-        this.messageSenders.put(SubscriptionType.TELEGRAM, new TelegramMessageSender(bot));
-        this.messageSenders.put(SubscriptionType.MAIL, new MailMessageSender());
+        messageSenders.put(SubscriptionType.TELEGRAM, new TelegramMessageSender(bot));
+        messageSenders.put(SubscriptionType.MAIL, new MailMessageSender());
     }
 
     public void notifySubscribers(String message) {

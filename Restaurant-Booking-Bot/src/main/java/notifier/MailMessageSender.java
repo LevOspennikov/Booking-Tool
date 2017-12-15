@@ -39,10 +39,14 @@ public class MailMessageSender implements MessageSender {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(subscriber.getSubscriberContact()));
             message.setSubject("Бронирование");
             message.setText(text);
+            send(message);
 
-            Transport.send(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    void send(Message msg) throws MessagingException {
+        Transport.send(msg);
     }
 }
