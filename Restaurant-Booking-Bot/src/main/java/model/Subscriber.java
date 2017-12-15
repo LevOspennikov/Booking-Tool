@@ -2,7 +2,7 @@ package model;
 
 public class Subscriber {
     private String subscriberContact;
-    private SubscribeType type;
+    private SubscriptionType type;
 
     public Subscriber(String subscriberContact) {
         this.subscriberContact = subscriberContact;
@@ -10,10 +10,10 @@ public class Subscriber {
 
     public Subscriber(String subscriberContact, String type) {
         this(subscriberContact);
-        this.type = SubscribeType.valueOf(type);
+        this.type = SubscriptionType.valueOf(type);
     }
 
-    public String getSubscribeType() {
+    public String getSubscriptionType() {
         return type.toString();
     }
 

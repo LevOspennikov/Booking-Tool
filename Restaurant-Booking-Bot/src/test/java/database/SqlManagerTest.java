@@ -1,6 +1,7 @@
 package database;
 
 import model.Booking;
+import model.Subscriber;
 import model.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,6 +32,18 @@ public class SqlManagerTest {
                 Assert.assertEquals(booking.getTime(), bookingById.getTime());
                 Assert.assertEquals(booking.getPersonsCount(), bookingById.getPersonsCount());
             }
+        }
+    }
+
+    @Test
+    public void subscribersTest() {
+        List<Subscriber> subscribers = sqlManager.getSubscribers();
+        Assert.assertNotNull(subscribers);
+        for (Subscriber subscriber : subscribers) {
+            Assert.assertNotNull(subscriber.getSubscriberContact());
+            Assert.assertFalse(subscriber.getSubscriberContact().isEmpty());
+            Assert.assertNotNull(subscriber.getSubscriptionType());
+            Assert.assertFalse(subscriber.getSubscriptionType().isEmpty());
         }
     }
 }

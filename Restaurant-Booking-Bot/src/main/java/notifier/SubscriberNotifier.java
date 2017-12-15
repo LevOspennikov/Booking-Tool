@@ -1,7 +1,7 @@
 package notifier;
 
 import bot.RestaurantBookingBot;
-import model.SubscribeType;
+import model.SubscriptionType;
 import model.Subscriber;
 
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SubscriberNotifier {
-
     private List<Subscriber> subscribers = new ArrayList<>();
     private Map<String, MessageSender> messageSenders = new HashMap<>();
 
@@ -22,11 +21,11 @@ public class SubscriberNotifier {
 
     public void notifySubscribers(String message) {
         for (Subscriber subscriber : subscribers) {
-            messageSenders.get(subscriber.getSubscribeType()).sendMessage(subscriber, message);
+            messageSenders.get(subscriber.getSubscriptionType()).sendMessage(subscriber, message);
         }
     }
 
-    public void addSubscriber(String contact, SubscribeType type) {
+    public void addSubscriber(String contact, SubscriptionType type) {
         subscribers.add(new Subscriber(contact, type.toString()));
     }
 }

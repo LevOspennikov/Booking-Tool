@@ -1,6 +1,7 @@
 package database;
 
 import model.Booking;
+import model.Subscriber;
 import model.User;
 
 import java.sql.Connection;
@@ -118,6 +119,24 @@ public class SqlManager {
     public void changeBookingCount(long bookingId, int count) {
         String sql = "UPDATE Bookings SET personsCount = %d WHERE id = %d";
         executeUpdate(String.format(sql, count, bookingId));
+    }
+
+    public List<Subscriber> getSubscribers() {
+        String sql = "SELECT s.value AS value, t.value AS type\n" +
+                     "FROM Subscribers s, SubscriptionType t\n" +
+                     "WHERE s.type = t.id";
+        ResultSet rs = executeQuery(sql);
+        List<Subscriber> subscribers = new ArrayList<>();
+        try {
+            while (rs.next()) {
+                subscribers.add(new Subscriber(rs.getString("value"), rs.getString("type")));
+            }
+            return subscribers;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close();
+        }
     }
 
     private void executeUpdate(String query) {

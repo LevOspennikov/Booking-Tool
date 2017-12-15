@@ -77,14 +77,28 @@ public class BookingJdbcDao extends JdbcDaoSupport implements BookingDao {
                     "id             INTEGER   PRIMARY KEY," +
                     "name           TEXT      NOT NULL," +
                     "phone          TEXT      NOT NULL" +
-                ");" +
+                ");\n" +
                 "CREATE TABLE IF NOT EXISTS Bookings (" +
                     "id             INTEGER   PRIMARY KEY AUTOINCREMENT," +
                     "userId         INTEGER   NOT NULL," +
                     "personsCount   INTEGER   NOT NULL," +
                     "time           DATETIME  NOT NULL," +
                     "FOREIGN KEY (userId) REFERENCES Users (id)" +
+                ");\n" +
+                "CREATE TABLE IF NOT EXISTS Subscribers (" +
+                    "id      INTEGER   PRIMARY KEY AUTOINCREMENT," +
+                    "type    INTEGER   NOT NULL," +
+                    "value   INTEGER   NOT NULL," +
+                    "FOREIGN KEY (type) REFERENCES SubscriptionType (id)" +
+                ");\n" +
+                "CREATE TABLE IF NOT EXISTS SubscriptionType (" +
+                    "id      INTEGER   PRIMARY KEY AUTOINCREMENT," +
+                    "value   INTEGER   NOT NULL" +
                 ");";
+//                "INSERT INTO SubscriptionType(value) VALUES (\"TELEGRAM\");\n" +
+//                "INSERT INTO SubscriptionType(value) VALUES (\"MAIL\");" +
+//                "INSERT INTO Subscribers(type, value) VALUES (1, \"162350627\");" +
+//                "INSERT INTO Subscribers(type, value) VALUES (2, \"ospennikovlev@gmail.com\");";
         return getJdbcTemplate().update(sql);
     }
 }
