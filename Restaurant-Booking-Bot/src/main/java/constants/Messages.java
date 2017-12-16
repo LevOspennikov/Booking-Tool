@@ -29,7 +29,7 @@ public class Messages {
 
     public static String newBookingMessage(String user, String phone, String time, String count) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Новое бронирование на имя ").append(user).append(" добавлено. Информация по бронированию:\n");
+        builder.append("Добавлено новое бронирование на имя ").append(user).append(". Информация по бронированию:\n");
         return endPartBookingMessage(builder, phone, time, count);
     }
 
